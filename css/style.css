@@ -1,5 +1,65 @@
+body {
+    background: #EAEAEA;
+    overflow: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: #303030;
+    transition: all .5s ease-in-out;
+}
+
 canvas {
-    position: absolute;
-    top: 50;
-    left: 50;
+    position: relative;
+}
+
+a:hover {
+    color: #72bf47;
+}
+
+/* auth */
+
+.auth {
+    float: right;
+}
+
+/* control-panel */
+
+.control-panel span {
+    background: #E61C5D;
+    border: 2px solid #FFBD39;
+    text-transform: uppercase;
+    color: #FFF;
+    padding: 0.4%;
+
+}
+
+.control-panel ul li {
+    list-style: none;
+}
+
+.control-panel ul {
+    display: inline-block;
+}
+
+.control-panel li {
+    display: inline-block;
+    transition: all .3s ease-in-out;
+}
+
+.control-panel ul:hover {
+    cursor: pointer;
+}
+
+.control-panel li:hover {
+    color: #72bf47;
+    cursor: pointer;
+}
+
+/* nav */
+
+.nav-s ul li {
+    background: #303030;
+    display: inline-block;
+    list-style: none;
 }

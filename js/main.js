@@ -2,6 +2,7 @@
 
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
+
 //  Висота і ширина
 
 var width = canvas.width;
@@ -11,9 +12,31 @@ var blockSize = 10;
 var widthInBlocks = width / blockSize;
 var heightInBlocks = height / blockSize;
 
+// start 
+
+var startButton = document.getElementById('start');
+var stopButton = document.getElementById('stop');
+
+
+// stop.onclick = function() {
+//     startButton.disabled = false;
+//     stopButton.disabled = true;
+
+//  break IntervalId or intervalId = false;
+//   }
+
+
+// start.onclick = function() {
+//     startButton.disabled = true;
+//     stopButton.disabled = false;
+
+    
+//   }
+
 // Встановлюєм рахунок 0
 
 var score = 0;
+
 // Рамка
 
 var drawBorder = function () {
@@ -27,23 +50,26 @@ ctx.fillRect(width - blockSize, 0, blockSize, height);
 // Вивід тексту на екран
 
 var drawScore = function () {
-ctx.font = "20px Courier";
-ctx.fillStyle = "Green";
-ctx.textAlign = "left";
-ctx.textBaseline = "top";
-ctx.fillText("Score: " + score, blockSize, blockSize);
+ctx.font = "80px sans-serif";
+ctx.fillStyle = "#262626";
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+ctx.fillText(score, width / 2, height / 2);
 };
 
 
 // Відміняєм дію setInterval і висвідчуєм надпис "Game Over"
+
 var gameOver = function () {
 clearInterval(intervalId);
 ctx.font = "60px Courier";
 ctx.fillStyle = "Red";
 ctx.textAlign = "center";
-ctx.textBaseline = "middle";
-ctx.fillText("Game Over", width / 2, height / 2);
+ctx.textBaseline = "bottom";
+ctx.fillText("Game Over", width / 2, height / 3);
 };
+
+
 // Окружність
 var circle = function (x, y, radius, fillCircle) {
 ctx.beginPath();
@@ -54,30 +80,40 @@ ctx.fill();
 ctx.stroke();
 }
 };
+
 // Задаєм конструктор Block (ячейка)
+
 var Block = function (col, row) {
 this.col = col;
 this.row = row;
 };
+
 // Квадрат в ячейці
+
 Block.prototype.drawSquare = function (color) {
 var x = this.col * blockSize;
 var y = this.row * blockSize;
 ctx.fillStyle = color;
 ctx.fillRect(x, y, blockSize, blockSize);
 };
+
 // Круг в яцейці
+
 Block.prototype.drawCircle = function (color) {
 var centerX = this.col * blockSize + blockSize / 2;
 var centerY = this.row * blockSize + blockSize / 2;
 ctx.fillStyle = color;
 circle(centerX, centerY, blockSize / 2, true);
 };
-// Перевіряєм, находиться чи ця ячейка в тій же позиції, що і ячейка otherBlock
+
+// Перевіряєм, чи находиться ця ячейка в тій же позиції, що і ячейка otherBlock
+
 Block.prototype.equal = function (otherBlock) {
 return this.col === otherBlock.col && this.row === otherBlock.row;
 };
-// Задаєм конструктор Snake (змейка)
+
+// Задаєм конструктор Snake (змійка)
+
 var Snake = function () {
 this.segments = [
 new Block(7, 5),
@@ -87,13 +123,17 @@ new Block(5, 5)
 this.direction = "right";
 this.nextDirection = "right";
 };
+
 // Квадртатики для змійки
+
 Snake.prototype.draw = function () {
 for (var i = 0; i < this.segments.length; i++) {
 this.segments[i].drawSquare("#E61C5D");
 }
 };
-// Створюжм нову голову і добавляєм її до початку змійки, щоб посунути змію в потрібну сторону
+
+// Створюжм нову голову 
+
 Snake.prototype.move = function () {
 var head = this.segments[0];
 var newHead;
@@ -119,7 +159,9 @@ apple.move();
 this.segments.pop();
 }
 };
+
 // Перевіряєм, чи не торкнулась  змійка стіни або свого тіла
+
 Snake.prototype.checkCollision = function (head) {
 var leftCollision = (head.col === 0);
 var topCollision = (head.row === 0);
@@ -134,7 +176,9 @@ selfCollision = true;
 }
 return wallCollision || selfCollision;
 };
+
 // Навігація
+
 Snake.prototype.setDirection = function (newDirection) {
 if (this.direction === "up" && newDirection === "down") {
 return;
@@ -147,24 +191,37 @@ return;
 }
 this.nextDirection = newDirection;
 };
+
+
+//Зробити підримку сенсорних пристроїв
+
 // Задаєм конструктор Apple (яблуко)
+
 var Apple = function () {
 this.position = new Block(10, 10);
 };
+
 // Кружок в позиції яблука
+
 Apple.prototype.draw = function () {
 this.position.drawCircle("#FFBD39");
 };
+
 // Генерація яблука в рандомномній клітинці
+
 Apple.prototype.move = function () {
 var randomCol = Math.floor(Math.random() * (widthInBlocks - 2)) + 1;
 var randomRow = Math.floor(Math.random() * (heightInBlocks - 2)) + 1;
 this.position = new Block(randomCol, randomRow);
 };
+
 // Об'єкт змійка і об'єкт яблучко
+
 var snake = new Snake();
 var apple = new Apple();
+
 // Запускаєм ф-ію анімації через setInterval
+
 var intervalId = setInterval(function () {
 ctx.clearRect(0, 0, width, height);
 drawScore();
@@ -172,8 +229,10 @@ snake.move();
 snake.draw();
 apple.draw();
 drawBorder();
-}, 100);
+}, 50); // Зробити три рівні: Fast (50), Medium (100), Slow (150)
+
 // Закріплюєм код навігації до клавіш
+
 var directions = {
 37: "left",
 38: "up",
@@ -182,10 +241,17 @@ var directions = {
 };
 
 // Задаєм опрацьовувач події keydown (клавіші-стрілки)
+
 $("body").keydown(function (event) {
 var newDirection = directions[event.keyCode];
 if (newDirection !== undefined) {
-snake.setDirection(newDirection);
+    snake.setDirection(newDirection);
 }
 });
+// var animationTime = 100;
+// var gameLoop = function () {
+//     Вставити код для промальовки елементів і оновлення стану гри
+//     setTimeout(gameLoop, animationTime);
+// }
+// gameLoop ();
 
